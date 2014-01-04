@@ -6,6 +6,8 @@ using WebCam_Capture;
 using System.Windows.Controls;
 using System.Collections.Generic;
 using System.Windows.Media.Imaging;
+using System.Drawing;
+using System.Windows.Forms;
 
 
 namespace WPFCSharpWebCam
@@ -25,9 +27,33 @@ namespace WPFCSharpWebCam
             _FrameImage = ImageControl;
         }
 
+        TimeSpan timeInterval = new TimeSpan(0, 0, 1);
+        DateTime lastCapturedTime = DateTime.MinValue;
+        Bitmap lastBitmap;
         void webcam_ImageCaptured(object source, WebcamEventArgs e)
         {
-            _FrameImage.Source = Helper.LoadBitmap((System.Drawing.Bitmap)e.WebCamImage);
+            if (DateTime.Now > lastCapturedTime + timeInterval)
+            {
+                const float similarityThreshold = 0.50f;
+                double compareLevel = 1;
+
+                if (lastBitmap != null)
+                {
+                    Bitmap currentBitmap = (System.Drawing.Bitmap)e.WebCamImage;
+                    bool result = BitmapComparator.CompareImages(lastBitmap, currentBitmap,compareLevel,similarityThreshold);
+                    if (result)
+                    {
+                        MessageBox.Show("lol");
+                    }
+                }
+               
+                lastCapturedTime = DateTime.Now;
+                lastBitmap = (System.Drawing.Bitmap)e.WebCamImage;
+               
+            }
+            //System.Drawing.Image bmp1 = Helper.LoadBitmap((System.Drawing.Bitmap)e.WebCamImage);   
+            
+            _FrameImage.Source = Helper.LoadBitmap((System.Drawing.Bitmap)e.WebCamImage);           
         }
 
         public void Start()

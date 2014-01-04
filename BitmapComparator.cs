@@ -10,16 +10,10 @@ namespace WPFCSharpWebCam
 {
     class BitmapComparator
     {
-        public static void CompareBitmaps(Bitmap bmp1, Bitmap bmp2)
-        {
-             if(bmp1.Width == bmp2.Width && bmp1.Height == bmp2.Height)
-             {
-
-             }
-        }
-
+       
+        
         private const string BitMapExtension = ".bmp";
-        public static Boolean CompareImages(string image, string targetImage, double compareLevel, string filepath, float similarityThreshold)
+        public static Boolean CompareImages(Bitmap image, Bitmap targetImage, double compareLevel, float similarityThreshold)
         {
             // Load images into bitmaps
             var imageOne = new Bitmap(image);
@@ -28,8 +22,8 @@ namespace WPFCSharpWebCam
             var newBitmap1 = ChangePixelFormat(new Bitmap(imageOne), System.Drawing.Imaging.PixelFormat.Format24bppRgb);
             var newBitmap2 = ChangePixelFormat(new Bitmap(imageTwo), System.Drawing.Imaging.PixelFormat.Format24bppRgb);
 
-            newBitmap1 = SaveBitmapToFile(newBitmap1, filepath, image, BitMapExtension);
-            newBitmap2 = SaveBitmapToFile(newBitmap2, filepath, targetImage, BitMapExtension);
+            // newBitmap1 = SaveBitmapToFile(newBitmap1, filepath, image, BitMapExtension);
+           // newBitmap2 = SaveBitmapToFile(newBitmap2, filepath, targetImage, BitMapExtension);
 
             // Setup the AForge library
             var tm = new ExhaustiveTemplateMatching(similarityThreshold);
