@@ -30,21 +30,29 @@ namespace WPFCSharpWebCam
         TimeSpan timeInterval = new TimeSpan(0, 0, 1);
         DateTime lastCapturedTime = DateTime.MinValue;
         Bitmap lastBitmap;
+        const float similarityThreshold = 0.5f;
+        double compareLevel = 0.98;
         void webcam_ImageCaptured(object source, WebcamEventArgs e)
         {
             if (DateTime.Now > lastCapturedTime + timeInterval)
             {
-                const float similarityThreshold = 0.50f;
-                double compareLevel = 1;
-
                 if (lastBitmap != null)
                 {
                     Bitmap currentBitmap = (System.Drawing.Bitmap)e.WebCamImage;
-                    bool result = BitmapComparator.CompareImages(lastBitmap, currentBitmap,compareLevel,similarityThreshold);
-                    if (result)
+                    //bool result = BitmapComparator.CompareImages(lastBitmap, currentBitmap,compareLevel,similarityThreshold);
+                    //if (result)
+                    //{
+                    //    MessageBox.Show("lol" + compareLevel);
+                    //   // compareLevel += 0.01;
+                    //}
+                    int result = BitmapComparator.CompareBitmaps(lastBitmap,currentBitmap,0,0);
+                    int threshold = 76230;
+                    if(result > threshold)
                     {
-                        MessageBox.Show("lol");
+                        MessageBox.Show(result.ToString());
                     }
+                    
+
                 }
                
                 lastCapturedTime = DateTime.Now;

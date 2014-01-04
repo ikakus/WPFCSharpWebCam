@@ -10,7 +10,37 @@ namespace WPFCSharpWebCam
 {
     class BitmapComparator
     {
-       
+
+
+      
+        public static int CompareBitmaps(Bitmap image, Bitmap targetImage, double compareLevel, float similarityThreshold)
+        {
+
+            if (image.Width == targetImage.Width && image.Height == targetImage.Height)
+            {
+                LockBitmap lockedImage = new LockBitmap(image);
+                LockBitmap lockedTargetImage = new LockBitmap(targetImage);
+
+                lockedImage.LockBits();
+                lockedTargetImage.LockBits();
+                int diffCount=0;
+
+                for(int i =0; i<lockedImage.Width;i++)
+                {
+                    for(int j=0;j<lockedImage.Height;j++)
+                    {
+                        if (lockedImage.GetPixel(i, j) != lockedTargetImage.GetPixel(i, j))
+                        {
+                            diffCount++;
+                        }
+                    }
+                }
+                lockedImage.UnlockBits();
+                lockedTargetImage.UnlockBits();
+                return diffCount;
+            }
+            return -1;
+        }
         
         private const string BitMapExtension = ".bmp";
         public static Boolean CompareImages(Bitmap image, Bitmap targetImage, double compareLevel, float similarityThreshold)
