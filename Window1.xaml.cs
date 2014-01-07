@@ -30,9 +30,25 @@ namespace WPFCSharpWebCam
         {
         	// TODO: Add event handler implementation here.
             webcam = new WebCam();
-            webcam.InitializeWebCam(ref imgVideo);
+            webcam.InitializeWebCam(ref imgVideo,this);
+            
+
         }
 
+
+        public int getTextboxInt(TextBox txtBox)
+        {
+
+            if (txtBox.Text != null && txtBox.Text != "")
+            {
+                return Convert.ToInt32(txtBox.Text);
+            }
+            else
+            {
+                return -1;
+            }
+           
+        }
         private void bntStart_Click(object sender, RoutedEventArgs e)
         {
             
@@ -46,6 +62,7 @@ namespace WPFCSharpWebCam
 
         private void bntContinue_Click(object sender, RoutedEventArgs e)
         {
+            
             webcam.Continue();
         }
 

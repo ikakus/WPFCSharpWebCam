@@ -47,8 +47,11 @@
                    Height="38.636" Margin="106.772,29.364,-102.09,0" Stroke="Black" VerticalAlignment="Top"
                    Width="44.318" Grid.RowSpan="2" />
         <Slider Minimum="0" Maximum="2000" TickFrequency="5" IsSnapToTickEnabled="True" Grid.Column="2"
-                HorizontalAlignment="Left" Margin="80.545,110.271,-131.545,0" Grid.Row="1" VerticalAlignment="Top"
-                Width="100" />
+                HorizontalAlignment="Left" Margin="80.545,155.271,-131.287,0" Grid.Row="1" VerticalAlignment="Top"
+                Width="100" Grid.RowSpan="2" />
+        <Label  x:Name="thresholdLable"  Content="Threshold" Grid.Column="2" HorizontalAlignment="Left" Margin="96.545,47.3,-131.287,0" Grid.Row="1" VerticalAlignment="Top" Width="84"/>
+        <TextBox x:Name="thresholdTextbox" Grid.Column="2" HorizontalAlignment="Left" Height="23" Margin="96.545,78.26,-106.544,0" Grid.Row="1" TextWrapping="Wrap" Text="7600" VerticalAlignment="Top" Width="59.257"/>
+        <TextBox x:Name="timeIntervalTExtBox" Grid.Column="2" HorizontalAlignment="Left" Height="23" Margin="96.545,114.3,-106.544,0" Grid.Row="1" TextWrapping="Wrap" Text="1000" VerticalAlignment="Top" Width="59.257" RenderTransformOrigin="0.579,0.783"/>
 
     </Grid>
 </Window>

@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Windows.Media.Imaging;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Windows.Media;
 
 
 namespace WPFCSharpWebCam
@@ -18,50 +19,68 @@ namespace WPFCSharpWebCam
         private WebCamCapture webcam;
         private System.Windows.Controls.Image _FrameImage;
         private int FrameNumber = 30;
-        public void InitializeWebCam(ref System.Windows.Controls.Image ImageControl)
+        Window1 wnd;
+        public void InitializeWebCam(ref System.Windows.Controls.Image ImageControl, Window1 window)
         {
             webcam = new WebCamCapture();
             webcam.FrameNumber = ((ulong)(0ul));
             webcam.TimeToCapture_milliseconds = FrameNumber;
             webcam.ImageCaptured += new WebCamCapture.WebCamEventHandler(webcam_ImageCaptured);
             _FrameImage = ImageControl;
+            wnd = window;
         }
 
-        TimeSpan timeInterval = new TimeSpan(0, 0, 1);
+        TimeSpan timeInterval;// = new TimeSpan(0, 0, 2);
         DateTime lastCapturedTime = DateTime.MinValue;
         Bitmap lastBitmap;
-        const float similarityThreshold = 0.5f;
-        double compareLevel = 0.98;
+
         void webcam_ImageCaptured(object source, WebcamEventArgs e)
         {
+            MotionDetection(e);
+            _FrameImage.Source = Helper.LoadBitmap((System.Drawing.Bitmap)e.WebCamImage);           
+        }
+
+        private void MotionDetection(WebcamEventArgs e)
+        {
+            timeInterval = new TimeSpan(0, 0, 0, wnd.getTextboxInt(wnd.timeIntervalTExtBox));
+            if (lastBitmap != null)
+            {
+                Bitmap currentBitmap = (System.Drawing.Bitmap)e.WebCamImage;
+                int result = BitmapComparator.CompareBitmaps(lastBitmap, currentBitmap, 0, 0);
+                wnd.thresholdLable.Content = result.ToString();
+            }
+
             if (DateTime.Now > lastCapturedTime + timeInterval)
             {
                 if (lastBitmap != null)
                 {
                     Bitmap currentBitmap = (System.Drawing.Bitmap)e.WebCamImage;
-                    //bool result = BitmapComparator.CompareImages(lastBitmap, currentBitmap,compareLevel,similarityThreshold);
-                    //if (result)
-                    //{
-                    //    MessageBox.Show("lol" + compareLevel);
-                    //   // compareLevel += 0.01;
-                    //}
-                    int result = BitmapComparator.CompareBitmaps(lastBitmap,currentBitmap,0,0);
-                    int threshold = 76230;
-                    if(result > threshold)
+
+                    int result = BitmapComparator.CompareBitmaps(lastBitmap, currentBitmap, 0, 0);
+                    int threshold = wnd.getTextboxInt(wnd.thresholdTextbox);
+
+                    wnd.thresholdLable.Content = result.ToString();
+
+                    if (result > threshold)
                     {
-                        MessageBox.Show(result.ToString());
+
+                        wnd.IndicatoRectangle.Fill = new SolidColorBrush(Colors.Red);
                     }
-                    
+                    else
+                    {
+
+                        wnd.IndicatoRectangle.Fill = new SolidColorBrush(Colors.Chartreuse);
+                    }
+
 
                 }
-               
+
                 lastCapturedTime = DateTime.Now;
                 lastBitmap = (System.Drawing.Bitmap)e.WebCamImage;
-               
+
             }
             //System.Drawing.Image bmp1 = Helper.LoadBitmap((System.Drawing.Bitmap)e.WebCamImage);   
-            
-            _FrameImage.Source = Helper.LoadBitmap((System.Drawing.Bitmap)e.WebCamImage);           
+
         }
 
         public void Start()
