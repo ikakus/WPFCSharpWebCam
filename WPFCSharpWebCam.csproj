@@ -97,6 +97,7 @@
     </Compile>
     <Compile Include="BitmapComparator.cs" />
     <Compile Include="LockBits.cs" />
+    <Compile Include="MotionDetection.cs" />
     <Compile Include="Window1.xaml.cs">
       <DependentUpon>Window1.xaml</DependentUpon>
       <SubType>Code</SubType>

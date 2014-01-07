@@ -11,6 +11,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Threading;
+using System.Drawing;
 
 namespace WPFCSharpWebCam
 {
@@ -26,13 +28,25 @@ namespace WPFCSharpWebCam
         }
 
         WebCam webcam;
+        Thread motionDetectionThread; 
+
         private void mainWindow_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {
         	// TODO: Add event handler implementation here.
             webcam = new WebCam();
             webcam.InitializeWebCam(ref imgVideo,this);
-            
+            motionDetectionThread = new Thread(new ThreadStart(ModionDetecetionThreadFunction));
+           // motionDetectionThread.Start();
 
+        }
+
+        public  void ModionDetecetionThreadFunction()
+        {
+            while(true)
+            {
+                Bitmap bmp = WebCam.capturedBitmap;
+                MotionDetection.Detection(this, bmp); 
+            }
         }
 
 

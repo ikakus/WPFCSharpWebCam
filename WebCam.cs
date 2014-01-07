@@ -20,6 +20,7 @@ namespace WPFCSharpWebCam
         private System.Windows.Controls.Image _FrameImage;
         private int FrameNumber = 30;
         Window1 wnd;
+        public static Bitmap capturedBitmap;
         public void InitializeWebCam(ref System.Windows.Controls.Image ImageControl, Window1 window)
         {
             webcam = new WebCamCapture();
@@ -30,59 +31,14 @@ namespace WPFCSharpWebCam
             wnd = window;
         }
 
-        TimeSpan timeInterval;// = new TimeSpan(0, 0, 2);
-        DateTime lastCapturedTime = DateTime.MinValue;
-        Bitmap lastBitmap;
-
         void webcam_ImageCaptured(object source, WebcamEventArgs e)
         {
-            MotionDetection(e);
-            _FrameImage.Source = Helper.LoadBitmap((System.Drawing.Bitmap)e.WebCamImage);           
+            MotionDetection.OldDetection(e, wnd);
+            _FrameImage.Source = Helper.LoadBitmap((System.Drawing.Bitmap)e.WebCamImage);
+           // capturedBitmap = (System.Drawing.Bitmap)e.WebCamImage;
         }
 
-        private void MotionDetection(WebcamEventArgs e)
-        {
-            timeInterval = new TimeSpan(0, 0, 0, wnd.getTextboxInt(wnd.timeIntervalTExtBox));
-            if (lastBitmap != null)
-            {
-                Bitmap currentBitmap = (System.Drawing.Bitmap)e.WebCamImage;
-                int result = BitmapComparator.CompareBitmaps(lastBitmap, currentBitmap, 0, 0);
-                wnd.thresholdLable.Content = result.ToString();
-            }
-
-            if (DateTime.Now > lastCapturedTime + timeInterval)
-            {
-                if (lastBitmap != null)
-                {
-                    Bitmap currentBitmap = (System.Drawing.Bitmap)e.WebCamImage;
-
-                    int result = BitmapComparator.CompareBitmaps(lastBitmap, currentBitmap, 0, 0);
-                    int threshold = wnd.getTextboxInt(wnd.thresholdTextbox);
-
-                    wnd.thresholdLable.Content = result.ToString();
-
-                    if (result > threshold)
-                    {
-
-                        wnd.IndicatoRectangle.Fill = new SolidColorBrush(Colors.Red);
-                    }
-                    else
-                    {
-
-                        wnd.IndicatoRectangle.Fill = new SolidColorBrush(Colors.Chartreuse);
-                    }
-
-
-                }
-
-                lastCapturedTime = DateTime.Now;
-                lastBitmap = (System.Drawing.Bitmap)e.WebCamImage;
-
-            }
-            //System.Drawing.Image bmp1 = Helper.LoadBitmap((System.Drawing.Bitmap)e.WebCamImage);   
-
-        }
-
+       
         public void Start()
         {
             webcam.TimeToCapture_milliseconds = FrameNumber;
